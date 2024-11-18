@@ -11,15 +11,15 @@ module convolution_controller(
 	output [15:0] out_pixel
 );
 
-localparam SHARPEN_OFFSET_G = 128;
-localparam SHARPEN_OFFSET_RB = 64;
+localparam SHARPEN_OFFSET_G = 384;
+localparam SHARPEN_OFFSET_RB = 256;
 
-localparam EMBOSS_OFFSET_G = 0;
-localparam EMBOSS_OFFSET_RB = 64;
+localparam EMBOSS_OFFSET_G = 384;
+localparam EMBOSS_OFFSET_RB = 256;
 
 
-localparam OO_OFFSET_G = 256;
-localparam OO_OFFSET_RB = 256;
+localparam OO_OFFSET_G = 0;
+localparam OO_OFFSET_RB = 0;
 
 wire valid_out_conv;
 wire [47:0] out_pixel_46b;
@@ -49,7 +49,7 @@ always @(*) begin
 		0: out_pixel = {out_pixel_46b[36:32], out_pixel_46b[21:16], out_pixel_46b[4:0]};//identity kernel
 		1: out_pixel = {out_pixel_46b[36:32], out_pixel_46b[21:16], out_pixel_46b[4:0]};//sharpen max range: 9bits + 1 g 8b + 1 rb, min range: 8bit g 7b rb, max val: 320 g 160 rb, min val: -256 g -128 rb
 		2: out_pixel = {out_pixel_46b[36:32], out_pixel_46b[21:16], out_pixel_46b[4:0]};//emboss max  range: 9bits + 1 g 8b + 1 rb, min range: 8bit g 7b rb, max val: 192 g 96 rb, min val: -384 g -192 rb
-		3: out_pixel = {out_pixel_46b[37:33], out_pixel_46b[21:16], out_pixel_46b[5:1]};//idk? max  range: 9bits + 1 g 8b + 1 rb, min range: 9bits g 8b rb, max val: 512 g 256 rb, min val: -512 g -256 rb
+		3: out_pixel = {out_pixel_46b[36:32], out_pixel_46b[21:16], out_pixel_46b[4:0]};//idk? max  range: 9bits + 1 g 8b + 1 rb, min range: 9bits g 8b rb, max val: 512 g 256 rb, min val: -512 g -256 rb
 		default: out_pixel = {out_pixel_46b[36:32], out_pixel_46b[21:16], out_pixel_46b[4:0]};//identity kernel
 	endcase
 end
@@ -126,12 +126,12 @@ always @(posedge clk) begin
 		kernel[0] <= -1;
 		kernel[1] <= -1;
 		kernel[2] <= -1;
-		kernel[3] <= -1;
-		kernel[4] <= 8;
-		kernel[5] <= -1;
-		kernel[6] <= -1;
-		kernel[7] <= -1;
-		kernel[8] <= -1;
+		kernel[3] <= 0;
+		kernel[4] <= 0;
+		kernel[5] <= 0;
+		kernel[6] <= 1;
+		kernel[7] <= 1;
+		kernel[8] <= 1;
 		scale_bias_g <= OO_OFFSET_G;
 		scale_bias_rb <= OO_OFFSET_RB;
 	end
